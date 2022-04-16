@@ -44,6 +44,9 @@ class SequenceImageLoader(object):
                 pose.resize([3, 4])
                 self.gt_poses.append(pose)
 
+    def get_size(self):
+        return self.img_N
+
     def get_cur_pose(self):
         return self.gt_poses[self.img_id - 1]
 
