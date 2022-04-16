@@ -4,6 +4,7 @@ import glob
 from tqdm import tqdm
 import logging
 from utils.PinholeCamera import PinholeCamera
+import os
 
 
 class SequenceImageLoader(object):
@@ -11,7 +12,7 @@ class SequenceImageLoader(object):
         "root_path": "/Users/tushar.vaidya/datasets/kitti/hiring-assignment-lt/",
         "img_folder": "images",
         "ground_truth_file": "ground_truth.txt",
-        "start": 0,
+        "start": 000000,
         "format": "png"
     }
 
@@ -47,9 +48,8 @@ class SequenceImageLoader(object):
         return self.gt_poses[self.img_id - 1]
 
     def __getitem__(self, item):
-        file_name = self.config["root_path"] + \
-                                    "/" +\
-                                    str(item) + "." + self.config["format"]
+        file_name = self.config["root_path"] +"/" + self.config["img_folder"] +"/" \
+                    + str(item).zfill(6) + ".png"
         img = cv2.imread(file_name)
         return img
 
