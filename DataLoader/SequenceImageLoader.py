@@ -25,12 +25,12 @@ class SequenceImageLoader(object):
 
         self.img_id = self.config["start"]
         self.img_N = len(glob.glob(pathname=self.config["root_path"] + \
+                                            self.config["img_folder"]+\
                                              "/*." + \
                                              self.config["format"]))
 
         self.pose_path = self.config["root_path"] + \
-                            self.config["ground_truth_file"] + \
-                            ".txt"
+                            self.config["ground_truth_file"]
         self.gt_poses = []
         with open(self.pose_path) as f:
             lines = f.readlines()
@@ -43,11 +43,13 @@ class SequenceImageLoader(object):
                 pose.resize([3, 4])
                 self.gt_poses.append(pose)
 
+    def get_cur_pose(self):
+        return self.gt_poses[self.img_id - 1]
+
     def __getitem__(self, item):
         file_name = self.config["root_path"] + \
                                     "/" +\
-                                    str(item) + \ 
-                                    "." + self.config["format"]
+                                    str(item) + "." + self.config["format"]
         img = cv2.imread(file_name)
         return img
 

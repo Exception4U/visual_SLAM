@@ -97,7 +97,7 @@ def run(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='python_vo')
-    parser.add_argument('--config', type=str, default='params/kitti_superpoint_supergluematch.yaml',
+    parser.add_argument('--config', type=str, default='DataLoader/SequenceImageLoader.py',
                         help='config file')
     parser.add_argument('--logging', type=str, default='INFO',
                         help='logging level: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL')
