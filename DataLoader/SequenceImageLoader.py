@@ -3,13 +3,16 @@ import numpy as np
 import glob
 from tqdm import tqdm
 import logging
+from utils.PinholeCamera import PinholeCamera
 
 
 class SequenceImageLoader(object):
     default_config = {
-        "root_path": "/home/zxm/Pictures/Webcam",
+        "root_path": "/Users/tushar.vaidya/datasets/kitti/hiring-assignment-lt/",
+        "img_folder": "images",
+        "ground_truth_file": "ground_truth.txt",
         "start": 0,
-        "format": "jpg"
+        "format": "png"
     }
 
     def __init__(self, config={}):
@@ -18,11 +21,33 @@ class SequenceImageLoader(object):
         logging.info("Sequence image loader config: ")
         logging.info(self.config)
 
+        self.cam = PinholeCamera(1241.0, 376.0, 718.8560, 718.8560, 607.1928, 185.2157)
+
         self.img_id = self.config["start"]
-        self.img_N = len(glob.glob(pathname=self.config["root_path"] + "/*." + self.config["format"]))
+        self.img_N = len(glob.glob(pathname=self.config["root_path"] + \
+                                             "/*." + \
+                                             self.config["format"]))
+
+        self.pose_path = self.config["root_path"] + \
+                            self.config["ground_truth_file"] + \
+                            ".txt"
+        self.gt_poses = []
+        with open(self.pose_path) as f:
+            lines = f.readlines()
+            for line in lines:
+                ss = line.strip().split()
+                pose = np.zeros((1, len(ss)))
+                for i in range(len(ss)):
+                    pose[0, i] = float(ss[i])
+
+                pose.resize([3, 4])
+                self.gt_poses.append(pose)
 
     def __getitem__(self, item):
-        file_name = self.config["root_path"] + "/" + str(item) + "." + self.config["format"]
+        file_name = self.config["root_path"] + \
+                                    "/" +\
+                                    str(item) + \ 
+                                    "." + self.config["format"]
         img = cv2.imread(file_name)
         return img
 
