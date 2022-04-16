@@ -12,6 +12,7 @@ from DataLoader import create_dataloader
 from Detectors import create_detector
 from Matchers import create_matcher
 from VO.VisualOdometry import VisualOdometry, AbosluteScaleComputer
+from tqdm import tqdm
 
 
 def keypoints_plot(img, vo):
@@ -76,6 +77,8 @@ def run(args):
     log_fopen = open("results/" + fname + ".txt", mode='a')
 
     vo = VisualOdometry(detector, matcher, loader.cam)
+
+    pbar = tqdm(total=loader.get_size())
     for i, img in enumerate(loader):
         gt_pose = loader.get_cur_pose()
         R, t = vo.update(img, absscale.update(gt_pose))
@@ -86,7 +89,7 @@ def run(args):
         # === drawer ==================================
         img1 = keypoints_plot(img, vo)
         img2 = traj_plotter.update(t, gt_pose[:, 3])
-
+        pbar.update()
         cv2.imshow("keypoints", img1)
         cv2.imshow("trajectory", img2)
         if cv2.waitKey(10) == 27:
